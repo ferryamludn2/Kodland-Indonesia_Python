@@ -1,0 +1,11 @@
+# Virtual Environment
+venv/
+*.pyc
+__pycache__/
+
+# Instance Folder (berisi database dan file konfigurasi)
+instance/
+
+# IDE/Editor specific
+.vscode/
+.idea/
