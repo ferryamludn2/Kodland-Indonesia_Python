@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="text-center">
+        <h1>Selamat Datang di Kuis AI by Ferry Amaludin</h1>
+        <p>Uji pengetahuanmu tentang Kecerdasan Buatan dengan Python.</p>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-header">Ramalan Cuaca</div>
+        <div class="card-body">
+            <form method="POST" class="mb-3">
+                <div class="input-group">
+                    <input type="text" name="city" class="form-control" placeholder="Masukkan nama kota..." value="{{ city }}">
+                    <button class="btn btn-primary" type="submit">Cari</button>
+                </div>
+            </form>
+
+            {% if weather %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Hari</th>
+                        <th>Suhu Siang</th>
+                        <th>Suhu Malam</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for day in weather %}
+                    <tr>
+                        <td>{{ day.date }}</td>
+                        <td>{{ day.day_name }}</td>
+                        <td>{{ "%.1f"|format(day.temp_day) }}°C</td>
+                        <td>{{ "%.1f"|format(day.temp_night) }}°C</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="text-danger">Tidak dapat mengambil data cuaca. Pastikan nama kota benar atau coba lagi nanti.</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

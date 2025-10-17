@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="text-center">
+    <h2>Papan Peringkat</h2>
+    <p class="lead">Lihat siapa yang memiliki skor tertinggi!</p>
+</div>
+
+<div class="card mt-4">
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nickname</th>
+                    <th scope="col">Skor</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <th scope="row">{{ loop.index }}</th>
+                    <td>{{ user.nickname }}</td>
+                    <td>{{ user.total_score }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

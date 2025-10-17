@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="text-center">
+        <h2>Kuis Pengembangan AI</h2>
+        <p class="lead">Skor Sesi Ini: <strong>{{ session.get('current_quiz_score', 0) }}</strong></p>
+    </div>
+
+    {% if question %}
+    <div class="card mt-4">
+        <div class="card-header">
+            <h4>{{ question.text }}</h4>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                <input type="hidden" name="question_id" value="{{ question.id }}">
+                {% for answer in question.answers %}
+                <div class="form-check">
+                    <label class="form-check-label w-100">
+                        <input class="form-check-input" type="radio" name="answer" value="{{ answer.id }}" required>
+                        {{ answer.text }}
+                    </label>
+                </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary mt-3">Jawab</button>
+            </form>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        Wow! Sepertinya tidak ada pertanyaan di database. Minta admin untuk menambahkannya!
+    </div>
+    {% endif %}
+{% endblock %}

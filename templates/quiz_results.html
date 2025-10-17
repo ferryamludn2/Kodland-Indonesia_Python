@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="text-center">
+    <div class="card p-4">
+        <div class="card-body">
+            <h1 class="display-4">Sesi Selesai!</h1>
+            <p class="lead">Selamat, {{ current_user.nickname }}! Anda telah menyelesaikan sesi kuis ini.</p>
+            <hr>
+            <h3>Skor Akhir Anda:</h3>
+            <p class="display-1 fw-bold" style="color: #C09060;">{{ score }}</p>
+            <h3>Waktu Pengerjaan:</h3>
+            <p class="lead"><strong>{{ duration }} detik</strong></p>
+            <a href="{{ url_for('quiz') }}" class="btn btn-primary btn-lg mt-3">Mulai Sesi Baru</a>
+            <a href="{{ url_for('leaderboard') }}" class="btn btn-secondary btn-lg mt-3">Lihat Papan Peringkat</a>
+        </div>
+    </div>
+</div>
+
+<canvas id="confetti-canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var myCanvas = document.getElementById('confetti-canvas');
+        var myConfetti = confetti.create(myCanvas, {
+            resize: true,
+            useWorker: true
+        });
+        function fireConfetti() {
+            myConfetti({
+                particleCount: 150,
+                spread: 180,
+                origin: { y: 0.6 }
+            });
+        }
+        fireConfetti();
+        setTimeout(fireConfetti, 300);
+        setTimeout(fireConfetti, 600);
+    });
+</script>
+{% endblock %}
