@@ -1,4 +1,3 @@
-# app.py
 import os
 import requests
 import random
@@ -34,7 +33,6 @@ def get_weather(city):
         geo_data = geo_response.json()
 
         if not geo_data.get('results'):
-            print(f"Kota tidak ditemukan: {city}")
             return None
 
         location = geo_data['results'][0]
@@ -64,7 +62,6 @@ def get_weather(city):
             forecasts.append(forecast)
         return forecasts
     except requests.exceptions.RequestException as e:
-        print(f"Error fetching weather: {e}")
         return None
 
 @app.route('/', methods=['GET', 'POST'])
@@ -141,40 +138,33 @@ def logout():
 @app.route('/quiz', methods=['GET', 'POST'])
 @login_required
 def quiz():
+    if request.method == 'GET' and ('start_time' not in session or request.args.get('new_game')):
+        session['start_time'] = datetime.utcnow().isoformat()
+        session['current_quiz_score'] = 0
+        session['answered_questions'] = []
+        session['streak'] = 0
+        if request.args.get('new_game'):
+            return redirect(url_for('quiz'))
     if request.method == 'POST':
-        if 'start_time' not in session:
-            session['start_time'] = datetime.utcnow().isoformat()
-            session['current_quiz_score'] = 0
-            session['answered_questions'] = []
-
         question_id = request.form.get('question_id')
         selected_answer_id = request.form.get('answer')
-        if 'answered_questions' not in session:
-            session['answered_questions'] = []
+
         session['answered_questions'].append(int(question_id))
         session.modified = True
         answer = Answer.query.get(selected_answer_id)
         
         if answer and answer.is_correct:
-            session.setdefault('streak', 0)
             session['streak'] += 1
-            
             base_score = 10
             bonus = session['streak'] * 2
             score_earned = base_score + bonus
-            session.setdefault('current_quiz_score', 0)
             session['current_quiz_score'] += score_earned
             flash(f'Jawaban Benar! +{score_earned} poin (Streak x{session["streak"]})', 'success')
         else:
             session['streak'] = 0
             flash('Jawaban Salah!', 'danger')
-        
+
         return redirect(url_for('quiz'))
-    if 'start_time' not in session:
-        session['start_time'] = datetime.utcnow().isoformat()
-        session['current_quiz_score'] = 0
-        session['answered_questions'] = []
-        session['streak'] = 0
 
     answered_ids = session.get('answered_questions', [])
     random_question = Question.query.filter(Question.id.notin_(answered_ids)).order_by(func.random()).first()
@@ -253,8 +243,7 @@ def setup_database(app):
                     db.session.add(answer)
 
             db.session.commit()
-            print("Database diisi dengan 20 data kuis awal.")
-
+           
 if __name__ == '__main__':
     setup_database(app)
     app.run(debug=True)
